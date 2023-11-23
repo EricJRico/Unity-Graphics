@@ -222,7 +222,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         // Helper function to populate builtin stereo matricies as well as URP stereo matricies
-        internal void PushBuiltinShaderConstantsXR(RasterCommandBuffer cmd, bool renderIntoTexture)
+        internal void PushBuiltinShaderConstantsXR(RasterCommandBuffer cmd, bool renderIntoTexture, bool isOculusMotionVec = false)
         {
 #if ENABLE_VR && ENABLE_XR_MODULE
             if (xr.enabled)
@@ -232,9 +232,9 @@ namespace UnityEngine.Rendering.Universal
                 {
                     for (int viewId = 0; viewId < xr.viewCount; viewId++)
                     {
-                        XRBuiltinShaderConstants.UpdateBuiltinShaderConstants(GetViewMatrix(viewId), GetProjectionMatrix(viewId), renderIntoTexture, viewId);
+                        XRBuiltinShaderConstants.UpdateBuiltinShaderConstants(GetViewMatrix(viewId), GetProjectionMatrix(viewId), renderIntoTexture, viewId, xr.GetPrevViewValid(), xr.GetPrevViewMatrix(), isOculusMotionVec);
                     }
-                    XRBuiltinShaderConstants.SetBuiltinShaderConstants(cmd);
+                    XRBuiltinShaderConstants.SetBuiltinShaderConstants(cmd, isOculusMotionVec);
                 }
                 else
                 {
@@ -1617,6 +1617,7 @@ namespace UnityEngine.Rendering.Universal
         // DrawObjectsPass
         DrawOpaqueObjects,
         DrawTransparentObjects,
+        DrawMVOpaqueObjects,
         DrawScreenSpaceUI,
 
         // RenderObjectsPass
