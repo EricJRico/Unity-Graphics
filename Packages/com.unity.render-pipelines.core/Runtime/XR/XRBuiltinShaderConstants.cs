@@ -133,9 +133,9 @@ namespace UnityEngine.Experimental.Rendering
         /// This is required to maintain compatibility with legacy code and shaders.
         /// </summary>
         /// <param name="cmd"></param>
-        public static void SetBuiltinShaderConstants(RasterCommandBuffer cmd)
+        public static void SetBuiltinShaderConstants(RasterCommandBuffer cmd, bool isOculusMotionVec = false)
         {
-            SetBuiltinShaderConstants(cmd.m_WrappedCommandBuffer);
+            SetBuiltinShaderConstants(cmd.m_WrappedCommandBuffer, isOculusMotionVec);
         }
 
         /// <summary>

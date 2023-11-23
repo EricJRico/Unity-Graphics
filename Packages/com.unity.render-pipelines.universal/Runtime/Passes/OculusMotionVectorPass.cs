@@ -14,8 +14,8 @@ namespace UnityEngine.Rendering.Universal.Internal
         FilteringSettings m_FilteringSettings;
         ProfilingSampler m_ProfilingSampler;
 
-        RenderTargetIdentifier motionVectorColorIdentifier;
-        RenderTargetIdentifier motionVectorDepthIdentifier;
+        RTHandle m_MotionVectorColor;
+        RTHandle m_MotionVectorDepth;
 
         public OculusMotionVectorPass(string profilerTag, bool opaque, RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask, StencilState stencilState, int stencilReference)
         {
@@ -31,18 +31,22 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_ProfilingSampler = ProfilingSampler.Get(profileId);
         }
 
-        public void Setup(
-            RenderTargetIdentifier motionVecColorIdentifier,
-            RenderTargetIdentifier motionVecDepthIdentifier)
+        public void Setup(RTHandle motionVectorColor, RTHandle motionVectorDepth)
         {
-            this.motionVectorColorIdentifier = motionVecColorIdentifier;
-            this.motionVectorDepthIdentifier = motionVecDepthIdentifier;
+            m_MotionVectorColor = motionVectorColor;
+            m_MotionVectorDepth = motionVectorDepth;
         }
 
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
-            ConfigureTarget(motionVectorColorIdentifier, motionVectorDepthIdentifier);
+            ConfigureTarget(m_MotionVectorColor, m_MotionVectorDepth);
             ConfigureClear(ClearFlag.All, Color.black);
+        }
+
+        public override void OnCameraCleanup(CommandBuffer cmd)
+        {
+            m_MotionVectorColor = null;
+            m_MotionVectorDepth = null;
         }
 
         /// <inheritdoc/>
